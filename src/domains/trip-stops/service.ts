@@ -28,9 +28,14 @@ export const createTripStops = async (
     throw new Error("Failed to save trip stop.");
   }
 
-  const updateTrip = await Trip.findByIdAndUpdate(tripId, {
-    $push: { stops: response._id },
-  });
+  const updateTrip = await Trip.findByIdAndUpdate(
+    tripId,
+    {
+      $push: { stops: response._id },
+      tripCreationStatus: "2",
+    },
+    { new: true }
+  );
 
   if (!updateTrip) {
     TripStops.findByIdAndDelete(response._id);
