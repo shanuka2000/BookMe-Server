@@ -2,9 +2,10 @@ import Bus, { IBus } from "./model.js";
 
 export const createBus = async (
   busNumber: string,
-  totalSeatsAvailable: number
+  totalSeatsAvailable: number,
+  belongsTo: string
 ): Promise<IBus> => {
-  const bus = new Bus({ busNumber, totalSeatsAvailable });
+  const bus = new Bus({ busNumber, totalSeatsAvailable, belongsTo });
   return await bus.save();
 };
 
@@ -14,6 +15,10 @@ export const getAllBuses = async () => {
 
 export const getBus = async (id: string) => {
   return await Bus.findById(id);
+};
+
+export const findBusByNumber = async (busNumber: string) => {
+  return await Bus.findOne({ busNumber });
 };
 
 export const findById = async (id: string): Promise<IBus | null> => {

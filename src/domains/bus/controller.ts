@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   createBus,
   deleteBus,
+  findBusByNumber,
   findById,
   getAllBuses,
   getBus,
@@ -61,9 +62,14 @@ export const createBusController = async (
       return;
     }
 
-    const { busNumber, totalSeatsAvailable } = req.body;
+    const { busNumber, totalSeatsAvailable, belongsTo } = req.body;
+    const isBusAvailable = await findBusByNumber(busNumber);
+    if (isBusAvailable) {
+      res.status(400).json({ message: "Bus already registered" });
+      return;
+    }
 
-    const bus = await createBus(busNumber, totalSeatsAvailable);
+    const bus = await createBus(busNumber, totalSeatsAvailable, belongsTo);
 
     res.status(200).json({ message: "Bus created successfully.", data: bus });
     return;
