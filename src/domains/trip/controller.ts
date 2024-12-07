@@ -36,14 +36,6 @@ export const createTripController = async (
       .status(200)
       .json({ message: "Trip initialized successfully.", data: trip });
   } catch (err) {
-    if (err.message === "Start location not found.") {
-      res.status(404).json({ message: err.message });
-      return;
-    } else if (err.message === "End location not found.") {
-      res.status(404).json({ message: err.message });
-      return;
-    } else {
-      next(err);
-    }
+    next(err);
   }
 };
