@@ -5,6 +5,7 @@ import busRouter from "../domains/bus/routes.js";
 import tripRouter from "../domains/trip/routes.js";
 import tripStopsRouter from "../domains/trip-stops/routes.js";
 import authenticateToken from "../middleware/auth-handler-middleware.js";
+import bookingRouter from "../domains/booking/routes.js";
 
 const routerV1 = express.Router();
 
@@ -13,5 +14,6 @@ routerV1.use("/location", authenticateToken, locationRouter);
 routerV1.use("/bus", authenticateToken, busRouter);
 routerV1.use("/trip", authenticateToken, tripRouter);
 routerV1.use("/trip-stops", authenticateToken, tripStopsRouter);
+routerV1.use("/booking", authenticateToken, bookingRouter);
 
 export default routerV1;
