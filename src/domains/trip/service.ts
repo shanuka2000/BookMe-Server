@@ -60,3 +60,27 @@ export const initialiseTrip = async (
 export const findTripById = async (id: string): Promise<boolean> => {
   return !!(await Trip.findById(id));
 };
+
+export const completeTripCreation = async (
+  id: string,
+  busId: string,
+  fullTripSeatPrice: number,
+  driver: string
+) => {
+  const result = Trip.findByIdAndUpdate(
+    id,
+    {
+      busId,
+      fullTripSeatPrice,
+      driver,
+      tripCreationStatus: "3",
+    },
+    { new: true }
+  );
+
+  if (!result) {
+    throw new Error("Failed to update trip.");
+  }
+
+  return result;
+};
