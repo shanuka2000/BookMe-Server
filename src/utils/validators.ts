@@ -83,6 +83,7 @@ export const validateLocationRequest = (data: {
 export const validateBusRegister = (data: {
   busNumber: string;
   totalSeatsAvailable: number;
+  belongsTo: string;
 }) => {
   const schema = Joi.object({
     busNumber: Joi.string().min(3).required().messages({
@@ -92,6 +93,9 @@ export const validateBusRegister = (data: {
     totalSeatsAvailable: Joi.number().integer().min(10).required().messages({
       "string.empty": "Total number of seats in required.",
       "string.min": "Total number of must be at least 10.",
+    }),
+    belongsTo: Joi.string().required().messages({
+      "string.empty": "Bus belonging user required",
     }),
   });
 
