@@ -39,3 +39,28 @@ export const createTripStops = async (
 
   return response;
 };
+
+export const findTripStopById = async (id: string): Promise<boolean> => {
+  return !!(await TripStops.findById(id));
+};
+
+export const deleteTripStop = async (id: string) => {
+  const TripStop = await TripStops.findById(id);
+
+  const updateTrip = await Trip.findByIdAndUpdate(
+    TripStop.tripId,
+    {
+      $pull: { stops: id },
+    },
+    { new: true }
+  );
+
+  if (!updateTrip) {
+    throw new Error("Failed to update trip.");
+  }
+
+  const result = await TripStops.findByIdAndDelete(id);
+  if (!result) {
+    throw new Error("Failed to delete trip stop.");
+  }
+};
