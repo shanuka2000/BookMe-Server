@@ -1,8 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  validateDeleteTripStopRequest,
-  validateTripStopRequest,
-} from "../../utils/validators.js";
+import { validateTripStopRequest } from "../../utils/validators.js";
 import {
   createTripStops,
   deleteTripStop,

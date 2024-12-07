@@ -7,7 +7,6 @@ import {
   getBus,
   patchBus,
 } from "./service.js";
-import { error } from "console";
 import {
   validateBusPatch,
   validateBusRegister,

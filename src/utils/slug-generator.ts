@@ -1,4 +1,3 @@
-import { Response } from "express";
 import { isSlugTaken } from "../domains/location/service.js";
 
 /**

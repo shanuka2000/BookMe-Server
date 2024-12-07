@@ -47,9 +47,3 @@ export const createTripController = async (
     }
   }
 };
-
-export const patchStopsController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {};
