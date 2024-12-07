@@ -30,7 +30,6 @@ export const createTripStopController = async (
     }
 
     if (!(await findLocationById(stopLocation))) {
-      console.log("Inside location check");
       res.status(404).json({ message: "Location not found." });
       return;
     }
