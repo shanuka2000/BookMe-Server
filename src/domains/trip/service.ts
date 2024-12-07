@@ -22,9 +22,9 @@ export const initialiseTrip = async (
 
   const distanceDetails = await getDistanceDetails(startLoc, endLoc);
 
-  let distance;
-  let duration;
-  let tripCreationStatus;
+  let distance: string;
+  let duration: string;
+  let tripCreationStatus: "0" | "1" | "2" | "3";
 
   if (
     distanceDetails &&
@@ -55,4 +55,8 @@ export const initialiseTrip = async (
   });
 
   return await trip.save();
+};
+
+export const findTripById = async (id: string): Promise<boolean> => {
+  return !!(await Trip.findById(id));
 };

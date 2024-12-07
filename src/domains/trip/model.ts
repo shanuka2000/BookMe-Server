@@ -40,7 +40,7 @@ const tripSchema = new Schema<ITrip>(
     stops: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Location",
+        ref: "TripStops",
         default: [],
         required: false,
       },
