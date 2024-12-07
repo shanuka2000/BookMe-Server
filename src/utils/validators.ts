@@ -174,3 +174,26 @@ export const validateBookingCreateRequest = (data: {
 
   return schema.validate(data, { abortEarly: true });
 };
+
+export const validatePatchTripRequest = (data: {
+  busId: string;
+  fullTripSeatPrice: number;
+  driver: string;
+}) => {
+  const schema = Joi.object({
+    busId: Joi.string().required().messages({
+      "string.base": "Bus id by must be a string.",
+      "any.required": "Bus id by is required.",
+    }),
+    fullTripSeatPrice: Joi.number().integer().required().messages({
+      "number.base": "Seat price must be a number.",
+      "any.required": "Seat price is required.",
+    }),
+    driver: Joi.string().required().messages({
+      "string.base": "Driver id by must be a string.",
+      "any.required": "Driver id by is required.",
+    }),
+  });
+
+  return schema.validate(data, { abortEarly: true });
+};
