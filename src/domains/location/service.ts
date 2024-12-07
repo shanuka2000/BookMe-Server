@@ -40,3 +40,7 @@ export const getAllLocations = async () => {
 export const getLocation = async (id: string) => {
   return await Location.findById(id);
 };
+
+export const findLocationById = async (id: string): Promise<boolean> => {
+  return !!(await Location.findById(id));
+};

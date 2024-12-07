@@ -7,7 +7,6 @@ import {
 } from "./service.js";
 import { validateLocationRequest } from "../../utils/validators.js";
 import AdminAuth from "../auth/admin-auth/model.js";
-import Location from "./model.js";
 
 export const createLocationController = async (
   req: Request,
