@@ -167,4 +167,6 @@ export const validateBookingCreateRequest = (data: {
       "any.required": "Seats is required.",
     }),
   });
+
+  return schema.validate(data, { abortEarly: true });
 };
