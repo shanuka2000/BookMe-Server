@@ -89,7 +89,7 @@ export const validateBusRegister = (data: {
       "string.empty": "Bus number required",
       "string.min": "Bus number must be at least 3 characters long.",
     }),
-    totalSeatsAvailable: Joi.number().min(10).required().messages({
+    totalSeatsAvailable: Joi.number().integer().min(10).required().messages({
       "string.empty": "Total number of seats in required.",
       "string.min": "Total number of must be at least 10.",
     }),
@@ -100,7 +100,7 @@ export const validateBusRegister = (data: {
 
 export const validateBusPatch = (data: { totalSeatsAvailable: number }) => {
   const schema = Joi.object({
-    totalSeatsAvailable: Joi.number().min(10).required().messages({
+    totalSeatsAvailable: Joi.number().integer().min(10).required().messages({
       "string.empty": "Total number of seats in required.",
       "string.min": "Total number of must be at least 10.",
     }),
@@ -134,10 +134,37 @@ export const validateTripStopRequest = (data: {
 };
 
 export const validateDeleteTripStopRequest = (data: { tripStopId: string }) => {
-  const schema = Joi.string().required().messages({
-    "string.base": "Trip stop id must be a string.",
-    "any.required": "Trip stop id is required.",
+  const schema = Joi.object({
+    tripStopId: Joi.string().required().messages({
+      "string.base": "Trip stop id must be a string.",
+      "any.required": "Trip stop id is required.",
+    }),
   });
 
   return schema.validate(data, { abortEarly: true });
+};
+
+export const validateBookingCreateRequest = (data: {
+  bookedBy: string;
+  tripId: string;
+  seats: number;
+  bookingFrom: string;
+  bookingTo: string;
+}) => {
+  const schema = Joi.object({
+    bookedBy: Joi.string().required().messages({
+      "string.base": "Booked by must be a string.",
+      "any.required": "Booked by is required.",
+    }),
+    tripId: Joi.string().required().messages({
+      "string.base": "Trip id must be a string.",
+      "any.required": "Trip id is required.",
+    }),
+    seats: Joi.number().integer().min(1).max(5).required().messages({
+      "number.base": "Seats must be a number.",
+      "number.min": "Atleast 1 seat must be booked.",
+      "number.max": "Cannot book more than 5 seats.",
+      "any.required": "Seats is required.",
+    }),
+  });
 };
