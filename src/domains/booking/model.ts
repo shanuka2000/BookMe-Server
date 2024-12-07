@@ -7,7 +7,7 @@ interface IBooking extends Document {
   seats: number;
   bookingFrom: Types.ObjectId;
   bookingTo: Types.ObjectId;
-  bookingSttus: "reserved" | "confirmed" | "cancelled" | "abandoned";
+  bookingStatus: "reserved" | "confirmed" | "cancelled" | "abandoned";
   cancellationExpireAt: Date;
 }
 
@@ -23,7 +23,7 @@ const bookingSchema = new Schema<IBooking>(
       required: true,
     },
     bookingTo: { type: Schema.Types.ObjectId, ref: "Location", required: true },
-    bookingSttus: { type: String, default: "reserved", required: false },
+    bookingStatus: { type: String, default: "reserved", required: false },
     cancellationExpireAt: { type: Date, required: false },
   },
   {
