@@ -11,7 +11,7 @@ interface ITrip extends Document {
   duration: string;
   stops: Types.ObjectId[];
   busId: Types.ObjectId;
-  seatPrice: number;
+  fullTripSeatPrice: number;
   driver: Types.ObjectId;
   status: "not_started" | "on_going" | "completed";
   tripCreationStatus: "0" | "1" | "2" | "3";
@@ -51,7 +51,7 @@ const tripSchema = new Schema<ITrip>(
       default: null,
       required: false,
     },
-    seatPrice: { type: Number, required: false },
+    fullTripSeatPrice: { type: Number, required: false },
     driver: {
       type: Schema.Types.ObjectId,
       ref: "DriverAuth",
