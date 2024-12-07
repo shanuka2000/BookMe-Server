@@ -110,60 +110,26 @@ export const validateBusPatch = (data: { totalSeatsAvailable: number }) => {
   return schema.validate(data, { abortEarly: true });
 };
 
-export const validateTripStopRequest = (
-  data: Array<{ stopId: number; tripId: string; stopLocation: string }>
-) => {
-  const schema = Joi.array()
-    .items(
-      Joi.object({
-        stopId: Joi.number().integer().min(1).required().messages({
-          "number.base": "stopId must be a number.",
-          "number.min": "stopId must be greater than or equal to 1.",
-          "any.required": "stopId is required.",
-        }),
-        tripId: Joi.string().required().messages({
-          "string.base": "tripId must be a string.",
-          "any.required": "tripId is required.",
-        }),
-        stopLocation: Joi.string().required().messages({
-          "string.base": "stopLocation must be a string.",
-          "any.required": "stopLocation is required.",
-        }),
-      })
-    )
-    .min(1)
-    .required()
-    .messages({
-      "array.base": "The request body must be an array.",
-      "array.min": "At least one stop must be provided.",
-      "any.required": "Stops array is required.",
-    });
+export const validateTripStopRequest = (data: {
+  stopId: number;
+  tripId: string;
+  stopLocation: string;
+}) => {
+  const schema = Joi.object({
+    stopId: Joi.number().integer().min(1).required().messages({
+      "number.base": "stopId must be a number.",
+      "number.min": "stopId must be greater than or equal to 1.",
+      "any.required": "stopId is required.",
+    }),
+    tripId: Joi.string().required().messages({
+      "string.base": "tripId must be a string.",
+      "any.required": "tripId is required.",
+    }),
+    stopLocation: Joi.string().required().messages({
+      "string.base": "stopLocation must be a string.",
+      "any.required": "stopLocation is required.",
+    }),
+  });
+
   return schema.validate(data, { abortEarly: true });
-};
-
-// Validate tripId consistency
-export const validateTripStops = (
-  stops: Array<{ stopId: number; tripId: string; stopLocation: string }>
-) => {
-  const tripIdSet = new Set(stops.map((stop) => stop.tripId));
-  if (tripIdSet.size !== 1) {
-    const inconsistentIndex = stops.findIndex(
-      (stop, index, array) => stop.tripId !== array[0].tripId
-    );
-    throw new Error(
-      `Inconsistent tripId detected in object at index ${inconsistentIndex}.`
-    );
-  }
-
-  // Validate stopId sequence
-  const stopIds = stops.map((stop) => stop.stopId).sort((a, b) => a - b);
-  for (let i = 0; i < stopIds.length; i++) {
-    if (stopIds[i] !== i + 1) {
-      throw new Error(
-        `StopId sequence is broken at index ${i}. Expected ${i + 1} but found ${
-          stopIds[i]
-        }.`
-      );
-    }
-  }
 };
