@@ -1,5 +1,4 @@
 import Joi from "joi";
-import { Stop } from "../domains/trip-stops/types.js";
 
 export const validateRegistration = (data: Record<string, any>) => {
   const schema = Joi.object({
@@ -117,18 +116,27 @@ export const validateTripStopRequest = (data: {
 }) => {
   const schema = Joi.object({
     stopId: Joi.number().integer().min(1).required().messages({
-      "number.base": "stopId must be a number.",
-      "number.min": "stopId must be greater than or equal to 1.",
-      "any.required": "stopId is required.",
+      "number.base": "Stop id must be a number.",
+      "number.min": "Stop id must be greater than or equal to 1.",
+      "any.required": "Stop id is required.",
     }),
     tripId: Joi.string().required().messages({
-      "string.base": "tripId must be a string.",
-      "any.required": "tripId is required.",
+      "string.base": "Trip id must be a string.",
+      "any.required": "Trip id is required.",
     }),
     stopLocation: Joi.string().required().messages({
-      "string.base": "stopLocation must be a string.",
-      "any.required": "stopLocation is required.",
+      "string.base": "Stop location must be a string.",
+      "any.required": "Stop location is required.",
     }),
+  });
+
+  return schema.validate(data, { abortEarly: true });
+};
+
+export const validateDeleteTripStopRequest = (data: { tripStopId: string }) => {
+  const schema = Joi.string().required().messages({
+    "string.base": "Trip stop id must be a string.",
+    "any.required": "Trip stop id is required.",
   });
 
   return schema.validate(data, { abortEarly: true });
