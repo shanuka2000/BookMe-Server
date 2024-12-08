@@ -9,7 +9,7 @@ import bookingRouter from "../domains/booking/routes.js";
 
 const routerV1 = express.Router();
 
-routerV1.use("/auth", authenticateToken, authRouter);
+routerV1.use("/auth", authRouter);
 routerV1.use("/location", authenticateToken, locationRouter);
 routerV1.use("/bus", authenticateToken, busRouter);
 routerV1.use("/trip", authenticateToken, tripRouter);
