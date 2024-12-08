@@ -1,3 +1,4 @@
+import { error } from "console";
 import { getDistanceDetails } from "../../utils/location-support.js";
 import Location from "../location/model.js";
 import Trip from "./model.js";
@@ -67,6 +68,11 @@ export const completeTripCreation = async (
   fullTripSeatPrice: number,
   driver: string
 ) => {
+  const trip = await Trip.findById(id);
+  if (trip.tripCreationStatus === "1") {
+    throw new Error("Please complete stage 2 before stage 3.");
+  }
+
   const result = Trip.findByIdAndUpdate(
     id,
     {
