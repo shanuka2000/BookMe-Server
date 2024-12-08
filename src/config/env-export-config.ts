@@ -9,3 +9,4 @@ export const ACCESS_TOKEN_EXPIRE_IN = process.env
   .ACCESS_TOKEN_EXPIRE_IN as string;
 export const NODE_ENV = process.env.NODE_ENV as string;
 export const GOOGLE_API = process.env.GOOGLE_API as string;
+export const CLIENT_URL = process.env.CLIENT_URL as string;

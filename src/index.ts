@@ -9,7 +9,7 @@ const port = PORT || 5000;
 
 const startServer = async () => {
   try {
-    const serverStatus = server.listen(port, () => {
+    server.listen(port, () => {
       console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
     });
     await connectToDatabase();
