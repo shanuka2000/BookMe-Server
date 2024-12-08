@@ -170,6 +170,14 @@ export const validateBookingCreateRequest = (data: {
       "number.max": "Cannot book more than 5 seats.",
       "any.required": "Seats is required.",
     }),
+    bookingFrom: Joi.string().required().messages({
+      "string.base": "Booking from location must be a string.",
+      "any.required": "Booking from location is required.",
+    }),
+    bookingTo: Joi.string().required().messages({
+      "string.base": "Booking to location must be a string.",
+      "any.required": "Booking to location is required.",
+    }),
   });
 
   return schema.validate(data, { abortEarly: true });
