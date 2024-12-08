@@ -18,6 +18,10 @@ export const createBooking = async (
   }
   const tripPrice = await calculatePrice(tripId, seats, bookingFrom, bookingTo);
 
+  if (tripPrice === 0) {
+    throw new Error("Failed to calculate trip price.");
+  }
+
   const booking = new Booking({
     bookedBy,
     bookingPrice: tripPrice,

@@ -33,39 +33,39 @@ export const calculatePrice = async (
   bookingTo: string
 ): Promise<number> => {
   const trip = await Trip.findById(tripId);
-  const bookingFromLoc = await TripStops.findById(bookingFrom);
-  const bookingToLoc = await TripStops.findById(bookingTo);
+  const bookingFromLoc = await TripStops.findOne({ stopLocation: bookingFrom });
+  const bookingToLoc = await TripStops.findOne({ stopLocation: bookingTo });
 
-  if (
-    trip.startLocation === bookingFromLoc._id &&
-    trip.endLocation === bookingToLoc._id
-  ) {
-    return trip.fullTripSeatPrice;
-  } else if (
-    trip.startLocation === bookingFromLoc._id &&
-    trip.endLocation != bookingToLoc._id
-  ) {
-    const toStopId = bookingFromLoc.stopId;
-    const totalStops = trip.stops.length + 2;
+  if (bookingFromLoc && bookingToLoc) {
+    // canculate from stop id
+    const fronStopId = bookingFromLoc.stopId;
+    const endStopId = bookingToLoc.stopId;
+    const numOfStops = endStopId - fronStopId;
+    const totalStops = trip.stops.length - 1 + 2;
     const priceForOneStop = trip.fullTripSeatPrice / totalStops;
-    const totalPrice = priceForOneStop * toStopId * seats;
-    return totalPrice;
-  } else if (
-    trip.startLocation != bookingFromLoc._id &&
-    trip.endLocation === bookingToLoc._id
-  ) {
+    const finalPrice = priceForOneStop * numOfStops * seats;
+    return finalPrice;
+  } else if (!bookingFromLoc && !bookingToLoc) {
+    // return full trip price
+    return trip.fullTripSeatPrice * seats;
+  } else if (bookingFromLoc && !bookingToLoc) {
+    // start cal from booking from Loc to full trip end
     const fromStopId = bookingFromLoc.stopId;
-    const totalStops = trip.stops.length + 2;
+    const endStopId = trip.stops.length;
+    const numOfStops = endStopId - fromStopId + 1;
+    const totalStops = trip.stops.length - 1 + 2;
     const priceForOneStop = trip.fullTripSeatPrice / totalStops;
-    const totalPrice = priceForOneStop * (totalStops - fromStopId) * seats;
-    return totalPrice;
+    const finalPrice = priceForOneStop * numOfStops * seats;
+    return finalPrice;
+  } else if (!bookingFromLoc && bookingToLoc) {
+    // start cal from trip start to booking to Loc
+    const endStopId = bookingToLoc.stopId - 1;
+    const numOfStops = endStopId + 1;
+    const totalStops = trip.stops.length - 1 + 2;
+    const priceForOneStop = trip.fullTripSeatPrice / totalStops;
+    const finalPrice = priceForOneStop * numOfStops * seats;
+    return finalPrice;
   } else {
-    const fromStopId = bookingFromLoc.stopId;
-    const toStopId = bookingFromLoc.stopId;
-    const numStops = toStopId - fromStopId;
-    const totalStops = trip.stops.length + 2;
-    const priceForOneStop = trip.fullTripSeatPrice / totalStops;
-    const totalPrice = priceForOneStop * numStops * seats;
-    return totalPrice;
+    return 0;
   }
 };
