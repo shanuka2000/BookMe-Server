@@ -1,4 +1,3 @@
-import { error } from "console";
 import { getDistanceDetails } from "../../utils/location-support.js";
 import Location from "../location/model.js";
 import Trip from "./model.js";
@@ -89,4 +88,58 @@ export const completeTripCreation = async (
   }
 
   return result;
+};
+
+export const calculateTrips = async (
+  startLocation: string | undefined,
+  endLocation: string | undefined,
+  date: Date | undefined,
+  seats: string | undefined
+) => {
+  const query: any = {};
+
+  if (date) {
+    const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+    query.satrtDate = { $gte: startOfDay, $lte: endOfDay };
+  }
+
+  const trips = await Trip.find(query)
+    .populate("busId")
+    .populate("startLocation")
+    .populate("endLocation")
+    .populate("stops");
+
+  if (!trips) {
+    return [];
+  }
+
+  const filteredTrips = trips.filter((trip) => {
+    const tripStartLocation = trip.startLocation._id.toString();
+    const tripEndLocation = trip.endLocation._id.toString();
+    const tripStops = trip.stops.map((stop) => stop._id.toString());
+
+    const startLocationMatches =
+      startLocation &&
+      (tripStartLocation === startLocation ||
+        tripStops.includes(startLocation));
+    const endLocationMatches =
+      endLocation &&
+      (tripEndLocation === endLocation || tripStops.includes(endLocation));
+
+    return (
+      (!startLocation || startLocationMatches) &&
+      (!endLocation || endLocationMatches)
+    );
+  });
+
+  return filteredTrips;
+};
+
+export const findSingleTrip = async (id: string) => {
+  return await Trip.findById(id)
+    .populate("busId")
+    .populate("startLocation")
+    .populate("endLocation")
+    .populate("stops");
 };

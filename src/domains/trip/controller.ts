@@ -1,12 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  calculateTrips,
   completeTripCreation,
+  findSingleTrip,
   findTripById,
   initialiseTrip,
 } from "./service.js";
 import { validatePatchTripRequest } from "../../utils/validators.js";
 import { findById as findBusById } from "../bus/service.js";
 import { findById as findDriverById } from "../auth/driver-auth/service.js";
+import Trip from "./model.js";
 
 export const createTripController = async (
   req: Request,
@@ -89,6 +92,90 @@ export const patchTripController = async (
     res
       .status(200)
       .json({ message: "Trip creation completed.", data: response });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getTripsController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const startLocation = req.query.startLocation as string | undefined;
+    const endLocation = req.query.endLocation as string | undefined;
+    const startDate = req.query.startDate as string | undefined;
+    const seats = req.query.seats as string | undefined;
+
+    if (!startLocation && !endLocation && !startDate && !seats) {
+      const trips = await Trip.find();
+      res.status(200).json({
+        message: "All trips fetched successfully",
+        data: trips,
+      });
+      return;
+    }
+
+    let date;
+    if (startDate) {
+      date = new Date(startDate);
+      if (isNaN(date.getTime())) {
+        res.status(400).json({ message: "Invalid date format." });
+        return;
+      }
+    }
+
+    if (!startLocation || !endLocation) {
+      res.status(400).json({
+        message: "Both startLocation and endLocation are required.",
+      });
+      return;
+    }
+
+    const response = await calculateTrips(
+      startLocation,
+      endLocation,
+      date,
+      seats
+    );
+
+    if (!response || response.length === 0) {
+      res
+        .status(404)
+        .json({ message: "No trips found matching your criteria." });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Trips fetched successfully",
+      data: response,
+    });
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getSingleTripController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const response = await findSingleTrip(id);
+
+    if (!response) {
+      res.status(404).json({ message: "Resource not found" });
+      return;
+    }
+
+    res
+      .status(200)
+      .json({ message: "Trip fetched successfully", data: response });
+    return;
   } catch (err) {
     next(err);
   }
