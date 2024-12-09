@@ -60,7 +60,6 @@ export const patchTripStatusController = async (
   next: NextFunction
 ) => {
   try {
-    console.log("In patch");
     const { error } = validatePatchTripStatusRequest(req.body);
     if (error) {
       res.status(400).json({

@@ -5,6 +5,7 @@ import {
   deleteTripStop,
   findTripStopById,
   getAllTripStopsForTripId,
+  patchTripStop,
 } from "./service.js";
 import { findTripById } from "../trip/service.js";
 import { findLocationById } from "../location/service.js";
@@ -64,6 +65,28 @@ export const getTripStopsByTripIdController = async (
     res
       .status(200)
       .json({ message: "Trip stops fetched successfully.", data: response });
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const patchTripStopStatusController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { tripId, isArrived } = req.body;
+
+    if (!(await findTripStopById(id))) {
+      res.status(404).json({ message: "Trip stop not found." });
+      return;
+    }
+
+    await patchTripStop(id, tripId, isArrived);
+    res.status(200).json({ message: "Trip stop updated successfully." });
     return;
   } catch (err) {
     next(err);

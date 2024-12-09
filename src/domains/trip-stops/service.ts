@@ -73,3 +73,46 @@ export const deleteTripStop = async (id: string) => {
     throw new Error("Failed to delete trip stop.");
   }
 };
+
+export const patchTripStop = async (
+  id: string,
+  tripId: string,
+  isArrived: boolean
+) => {
+  const trip = await Trip.findById(tripId);
+  if (!trip) {
+    throw new Error("Failed to update due not trip not found.");
+  }
+
+  if (trip.status != "on_going") {
+    throw new Error("Failed to update due to trip not started.");
+  }
+
+  const tripStopToUpdate = await TripStops.findById(id);
+
+  if (tripStopToUpdate.stopId > 1) {
+    const checkTripStop = await TripStops.findOne({
+      stopId: tripStopToUpdate.stopId - 1,
+    });
+
+    if (!checkTripStop.isArrived) {
+      throw new Error(
+        "Failed to update due to attempt to break stop sequence."
+      );
+    }
+  }
+
+  const updateTripStop = await TripStops.findByIdAndUpdate(
+    id,
+    {
+      isArrived,
+    },
+    { new: true }
+  );
+
+  if (!updateTripStop) {
+    throw new Error("Failed to update trip stop.");
+  }
+
+  return updateTripStop;
+};
