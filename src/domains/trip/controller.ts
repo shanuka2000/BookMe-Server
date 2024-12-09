@@ -5,8 +5,12 @@ import {
   findSingleTrip,
   findTripById,
   initialiseTrip,
+  patchTripStatus,
 } from "./service.js";
-import { validatePatchTripRequest } from "../../utils/validators.js";
+import {
+  validatePatchTripRequest,
+  validatePatchTripStatusRequest,
+} from "../../utils/validators.js";
 import { findById as findBusById } from "../bus/service.js";
 import { findById as findDriverById } from "../auth/driver-auth/service.js";
 import Trip from "./model.js";
@@ -45,6 +49,37 @@ export const createTripController = async (
     res
       .status(200)
       .json({ message: "Trip initialized successfully.", data: trip });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const patchTripStatusController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    console.log("In patch");
+    const { error } = validatePatchTripStatusRequest(req.body);
+    if (error) {
+      res.status(400).json({
+        message: "Validation failed.",
+        error: error.details[0].message,
+      });
+      return;
+    }
+    const { id } = req.params;
+    if (!(await findTripById(id))) {
+      res.status(404).json({ message: "Trip not found." });
+      return;
+    }
+
+    const { status } = req.body;
+
+    await patchTripStatus(id, status);
+    res.status(200).json({ message: "Trip patched successfully." });
+    return;
   } catch (err) {
     next(err);
   }

@@ -205,3 +205,21 @@ export const validatePatchTripRequest = (data: {
 
   return schema.validate(data, { abortEarly: true });
 };
+
+export const validatePatchTripStatusRequest = (data: {
+  status: "not_started" | "on_going" | "completed";
+}) => {
+  const schema = Joi.object({
+    status: Joi.string()
+      .valid("not_started", "on_going", "completed")
+      .required()
+      .messages({
+        "string.base": "Status must be a string.",
+        "any.only":
+          "Status must be one of 'not_started', 'on_going', or 'completed'.",
+        "any.required": "Status is required.",
+      }),
+  });
+
+  return schema.validate(data, { abortEarly: true });
+};

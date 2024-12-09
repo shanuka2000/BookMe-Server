@@ -72,7 +72,7 @@ export const completeTripCreation = async (
     throw new Error("Please complete stage 2 before stage 3.");
   }
 
-  const result = Trip.findByIdAndUpdate(
+  const result = await Trip.findByIdAndUpdate(
     id,
     {
       busId,
@@ -148,4 +148,28 @@ export const findSingleTrip = async (id: string) => {
         model: "Location",
       },
     });
+};
+
+export const patchTripStatus = async (
+  id: string,
+  status: "not_started" | "on_going" | "completed"
+) => {
+  const trip = await Trip.findById(id);
+  if (trip.tripCreationStatus != "3") {
+    throw new Error("Please complete creation of trip before starting.");
+  }
+
+  const result = await Trip.findByIdAndUpdate(
+    id,
+    {
+      status,
+    },
+    { new: true }
+  );
+
+  if (!result) {
+    throw new Error("Failed to update trip.");
+  }
+
+  return result;
 };
