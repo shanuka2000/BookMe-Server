@@ -49,6 +49,10 @@ export const findTripStopById = async (id: string): Promise<boolean> => {
   return !!(await TripStops.findById(id));
 };
 
+export const getAllTripStopsForTripId = async (id: string) => {
+  return await TripStops.find({ tripId: id }).populate("stopLocation");
+};
+
 export const deleteTripStop = async (id: string) => {
   const TripStop = await TripStops.findById(id);
 

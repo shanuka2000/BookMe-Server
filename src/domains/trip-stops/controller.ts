@@ -4,6 +4,7 @@ import {
   createTripStops,
   deleteTripStop,
   findTripStopById,
+  getAllTripStopsForTripId,
 } from "./service.js";
 import { findTripById } from "../trip/service.js";
 import { findLocationById } from "../location/service.js";
@@ -39,6 +40,30 @@ export const createTripStopController = async (
     res
       .status(200)
       .json({ message: "Trip stop saved successfully.", date: response });
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getTripStopsByTripIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    if (!(await findTripById(id))) {
+      res.status(404).json({ message: "Trip not found." });
+      return;
+    }
+
+    const response = await getAllTripStopsForTripId(id);
+
+    res
+      .status(200)
+      .json({ message: "Trip stops fetched successfully.", data: response });
     return;
   } catch (err) {
     next(err);
