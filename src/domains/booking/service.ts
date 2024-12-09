@@ -74,6 +74,7 @@ export const findBookingById = async (id: string): Promise<boolean> => {
 
 export const getBookings = async (id: string) => {
   return await Booking.find({ bookedBy: id })
+    .populate("bookedBy")
     .populate("bookingFrom")
     .populate("bookingTo");
 };

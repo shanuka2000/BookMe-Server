@@ -141,5 +141,11 @@ export const findSingleTrip = async (id: string) => {
     .populate("busId")
     .populate("startLocation")
     .populate("endLocation")
-    .populate("stops");
+    .populate({
+      path: "stops",
+      populate: {
+        path: "stopLocation",
+        model: "Location",
+      },
+    });
 };
