@@ -7,7 +7,12 @@ interface IBooking extends Document {
   seats: number;
   bookingFrom: Types.ObjectId;
   bookingTo: Types.ObjectId;
-  bookingStatus: "reserved" | "confirmed" | "cancelled" | "abandoned";
+  bookingStatus:
+    | "reserved"
+    | "confirmed"
+    | "cancelled"
+    | "abandoned"
+    | "completed";
   cancellationExpireAt: Date;
 }
 

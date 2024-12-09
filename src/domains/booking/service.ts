@@ -66,3 +66,9 @@ export const updateBookingStatus = async (
 export const findBookingById = async (id: string): Promise<boolean> => {
   return !!(await Booking.findById(id));
 };
+
+export const getBookings = async (id: string) => {
+  return await Booking.find({ bookedBy: id })
+    .populate("bookingFrom")
+    .populate("bookingTo");
+};

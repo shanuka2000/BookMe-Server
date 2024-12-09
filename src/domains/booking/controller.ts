@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { validateBookingCreateRequest } from "../../utils/validators.js";
-import { findById } from "../auth/user-auth/service.js";
+import { findById as findUserById } from "../auth/user-auth/service.js";
 import { findTripById } from "../trip/service.js";
 import { findLocationById } from "../location/service.js";
 import {
   createBooking,
   findBookingById,
+  getBookings,
   updateBookingStatus,
 } from "./service.js";
 
@@ -25,7 +26,7 @@ export const createBookingContoller = async (
     }
     const { bookedBy, tripId, seats, bookingFrom, bookingTo } = req.body;
 
-    const user = await findById(bookedBy);
+    const user = await findUserById(bookedBy);
     if (!user) {
       res.status(404).json({ message: "User not found." });
       return;
@@ -92,6 +93,30 @@ export const patchBookingController = async (
     res
       .status(200)
       .json({ message: "Booking updated successfully.", date: response });
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getBookingsByUserIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const user = await findUserById(id);
+    if (!user) {
+      res.status(404).json({ message: "User not found." });
+      return;
+    }
+
+    const response = await getBookings(id);
+    res
+      .status(200)
+      .json({ message: "Bookings retrived successfully.", data: response });
     return;
   } catch (err) {
     next(err);
