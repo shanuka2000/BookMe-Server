@@ -52,7 +52,12 @@ export const createBooking = async (
 
 export const updateBookingStatus = async (
   id: string,
-  bookingStatus: "reserved" | "confirmed" | "cancelled" | "abandoned"
+  bookingStatus:
+    | "reserved"
+    | "confirmed"
+    | "cancelled"
+    | "abandoned"
+    | "completed"
 ) => {
   const booking = await Booking.findByIdAndUpdate(
     id,
