@@ -20,7 +20,7 @@ const authenticateToken = (
   try {
     const token = req.cookies.access_token;
 
-    if (NODE_ENV === "production") {
+    if (NODE_ENV === "development") {
       if (!token) {
         res.status(401).json({ message: "Access denied. No token provided." });
         return;

@@ -10,10 +10,10 @@ import bookingRouter from "../domains/booking/routes.js";
 const routerV1 = express.Router();
 
 routerV1.use("/auth", authRouter);
-routerV1.use("/location", authenticateToken, locationRouter);
-routerV1.use("/bus", authenticateToken, busRouter);
-routerV1.use("/trip", authenticateToken, tripRouter);
-routerV1.use("/trip-stops", authenticateToken, tripStopsRouter);
-routerV1.use("/booking", authenticateToken, bookingRouter);
+routerV1.use("/location", locationRouter);
+routerV1.use("/bus", busRouter);
+routerV1.use("/trip", tripRouter);
+routerV1.use("/trip-stops", tripStopsRouter);
+routerV1.use("/booking", bookingRouter);
 
 export default routerV1;

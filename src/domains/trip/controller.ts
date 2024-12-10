@@ -110,11 +110,13 @@ export const patchTripController = async (
     const isBusAvailable = await findBusById(busId);
     if (!isBusAvailable) {
       res.status(404).json({ message: "Bus was not found." });
+      return;
     }
 
     const isDriverAvailable = await findDriverById(driver);
     if (!isDriverAvailable) {
       res.status(404).json({ message: "Driver was not found." });
+      return;
     }
 
     const response = await completeTripCreation(
@@ -126,6 +128,35 @@ export const patchTripController = async (
     res
       .status(200)
       .json({ message: "Trip creation completed.", data: response });
+    return;
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getTripsByDriverIdController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+
+    const isDriverAvailable = await findDriverById(id);
+    if (!isDriverAvailable) {
+      res.status(404).json({ message: "Driver was not found." });
+      return;
+    }
+
+    const tripsForDriver = await Trip.find({ driver: id })
+      .populate("startLocation")
+      .populate("endLocation")
+      .populate("busId")
+      .populate("driver");
+    res
+      .status(200)
+      .json({ message: "Trips retrived successfully", data: tripsForDriver });
+    return;
   } catch (err) {
     next(err);
   }
