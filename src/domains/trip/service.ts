@@ -108,29 +108,37 @@ export const calculateTrips = async (
     .populate("busId")
     .populate("startLocation")
     .populate("endLocation")
-    .populate("stops");
+    .populate({
+      path: "stops",
+      populate: { path: "stopLocation", model: "Location" },
+      options: { sort: { stopId: 1 } },
+    });
 
   if (!trips) {
     return [];
   }
 
   const filteredTrips = trips.filter((trip) => {
-    const tripStartLocation = trip.startLocation._id.toString();
-    const tripEndLocation = trip.endLocation._id.toString();
-    const tripStops = trip.stops.map((stop) => stop._id.toString());
-
-    const startLocationMatches =
-      startLocation &&
-      (tripStartLocation === startLocation ||
-        tripStops.includes(startLocation));
-    const endLocationMatches =
-      endLocation &&
-      (tripEndLocation === endLocation || tripStops.includes(endLocation));
-
-    return (
-      (!startLocation || startLocationMatches) &&
-      (!endLocation || endLocationMatches)
+    const tripStartLocation = trip.startLocation?._id.toString();
+    const tripEndLocation = trip.endLocation?._id.toString();
+    const tripStops = trip.stops.map((stop: any) =>
+      stop.stopLocation._id.toString()
     );
+
+    if (!startLocation || !endLocation) return false;
+
+    if (
+      tripStartLocation === startLocation &&
+      tripEndLocation === endLocation
+    ) {
+      return true;
+    }
+
+    const locationSequence = [tripStartLocation, ...tripStops, tripEndLocation];
+    const startIndex = locationSequence.indexOf(startLocation);
+    const endIndex = locationSequence.indexOf(endLocation);
+
+    return startIndex !== -1 && endIndex !== -1 && startIndex < endIndex;
   });
 
   return filteredTrips;
